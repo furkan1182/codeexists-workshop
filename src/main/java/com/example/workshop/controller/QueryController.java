@@ -2,10 +2,9 @@ package com.example.workshop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.workshop.entities.dto.QueryRequest;
@@ -25,11 +24,13 @@ public class QueryController {
 		this.queryService = queryService;
 	}
 
-	@GetMapping({"/", ""})
-	public ResponseEntity<QueryResponse> fetchPlaces(@RequestBody @Validated QueryRequest request) {
+	@GetMapping({ "/", "" })
+	public ResponseEntity<QueryResponse> fetchPlaces(@RequestParam("longtitude") double longtitude,
+			@RequestParam("latitude") double latitude, @RequestParam("radius") double radius) {
 		try {
+			var request = new QueryRequest(longtitude, latitude, radius);
 			return ResponseEntity.ok(queryService.fetchPlaces(request));
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.internalServerError().build();
 		}
 	}
