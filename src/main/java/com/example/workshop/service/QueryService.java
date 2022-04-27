@@ -1,5 +1,6 @@
 package com.example.workshop.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,12 @@ public class QueryService {
 			queryResponse = placesResponseRepository.findByQuery(savedQuery.get());
 			placesDto = convertToDto(queryResponse.get().getPlaces());
 		} else {
-			var places = client.search(request.getLatitude(), request.getLongtitude(), request.getRadius());
+			List<Places> places;
+			try {
+				places = client.search(request.getLatitude(), request.getLongtitude(), request.getRadius());
+			} catch (IOException e) {
+				return QueryResponse.of(null);
+			}
 
 			var newSavedQuery = new Query();
 
@@ -65,7 +71,7 @@ public class QueryService {
 			placesDto = convertToDto(places);
 
 		}
-		return QueryResponse.of(placesDto);
+		return QueryResponse.of(true, placesDto);
 	}
 
 	private List<PlacesDto> convertToDto(List<Places> places) {
