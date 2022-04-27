@@ -31,6 +31,7 @@ public class QueryController {
 			var request = new QueryRequest(longtitude, latitude, radius);
 			return ResponseEntity.ok(queryService.fetchPlaces(request));
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.internalServerError().build();
 		}
 	}
